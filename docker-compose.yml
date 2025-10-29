@@ -1,11 +1,13 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:15
     container_name: aitiguru_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1
-      POSTGRES_DB: aitiguru
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -18,12 +20,8 @@ services:
     container_name: aitiguru_app
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: aitiguru
-      DB_USER: postgres
-      DB_PASSWORD: 1
+    env_file:
+      - .env 
     networks:
       - aitiguru_network
 
