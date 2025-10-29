@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: aitiguru_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: aitiguru
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - aitiguru_network
+
+  app:
+    build: ./app
+    container_name: aitiguru_app
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: aitiguru
+      DB_USER: postgres
+      DB_PASSWORD: 1
+    networks:
+      - aitiguru_network
+
+networks:
+  aitiguru_network:
+    driver: bridge
